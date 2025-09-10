@@ -1,15 +1,32 @@
 <template>
-  <div id="app">
-    <AppHeader />
-    <AppControls />
-    <div class="main-container">
-      <CategorySection
-        v-for="category in categories"
-        :key="category.id"
-        :category="category"
-        :projects="getProjectsByCategory(category.id)"
-      />
+  <div id="app" class="app-container">
+    <!-- Mobile Sidebar Toggle -->
+    <button class="sidebar-toggle" @click="toggleSidebar">
+      <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Sidebar Navigation -->
+    <SidebarNavigation 
+      :categories="categories"
+      :projects="projects"
+      ref="sidebar"
+    />
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <AppHeader />
+      <AppControls />
+      <div class="main-container">
+        <CategorySection
+          v-for="category in categories"
+          :key="category.id"
+          :id="category.id"
+          :category="category"
+          :projects="getProjectsByCategory(category.id)"
+        />
+      </div>
     </div>
+    
     <InfoModal v-if="showInfoModal" @close="showInfoModal = false" />
   </div>
 </template>
@@ -20,8 +37,8 @@ import AppHeader from './components/AppHeader.vue'
 import AppControls from './components/AppControls.vue'
 import CategorySection from './components/CategorySection.vue'
 import InfoModal from './components/InfoModal.vue'
+import SidebarNavigation from './components/SidebarNavigation.vue'
 import { useTranslations, useTheme } from './i18n/useTranslations'
-// import { useTheme } from './i18n/useTheme'
 
 export default {
   name: 'App',
@@ -29,10 +46,12 @@ export default {
     AppHeader,
     AppControls,
     CategorySection,
-    InfoModal
+    InfoModal,
+    SidebarNavigation
   },
   setup() {
     const showInfoModal = ref(false)
+    const sidebar = ref(null)
     const { currentLanguage, t, setLanguage } = useTranslations()
     const { isDarkMode, toggleTheme } = useTheme()
 
@@ -87,11 +106,9 @@ export default {
         demoLink: '#',
         codeLink: 'https://github.com/Maximilian2306/FlyTillYouDieDepot'
       },
-
       // Tools
-
       {
-        id: 3,
+        id: 4,
         category: 'tools',
         title: 'Auto Clicker',
         descriptionKey: 'formatter-desc',
@@ -106,17 +123,71 @@ export default {
       return projects.value.filter(p => p.category === categoryId)
     }
 
+    const toggleSidebar = () => {
+      if (sidebar.value) {
+        sidebar.value.isSidebarOpen = !sidebar.value.isSidebarOpen
+      }
+    }
+
     return {
       showInfoModal,
+      sidebar,
       categories,
       projects,
-      getProjectsByCategory
+      getProjectsByCategory,
+      toggleSidebar
     }
   }
 }
 </script>
 
 <style>
-/* @import './assets/styles/main.css'; */
 @import './style.css';
-</style> 
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 250px;
+  width: calc(100% - 250px);
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  background: var(--gradient);
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .sidebar-toggle {
+    display: block;
+  }
+  
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .header {
+    padding-left: 4rem;
+  }
+}
+</style>
