@@ -89,7 +89,7 @@ export default {
       {
         id: 1,
         category: 'games',
-        title: 'Minesweeper_AI',
+        title: 'Minesweeper_AI_optimized',
         descriptionKey: 'space-desc',
         icon: 'rocket',
         tech: ['JavaScript', 'HTML5', 'WebGL'],
@@ -106,6 +106,16 @@ export default {
         demoLink: '#',
         codeLink: 'https://github.com/Maximilian2306/FlyTillYouDieDepot'
       },
+      {
+        id: 3,
+        category: 'games',
+        title: 'Minesweeper_AI',
+        descriptionKey: 'space-desc',
+        icon: 'rocket',
+        tech: ['JavaScript', 'HTML5', 'WebGL'],
+        demoLink: 'https://maximilian2306.github.io/Minesweeper_AI/',
+        codeLink: 'https://github.com/Maximilian2306/Minesweeper_AI'
+      },
       // Tools
       {
         id: 4,
@@ -113,7 +123,7 @@ export default {
         title: 'Auto Clicker',
         descriptionKey: 'formatter-desc',
         icon: 'code',
-        tech: ['Node.js', 'Express', 'Prettier'],
+        tech: ['Python'],
         demoLink: '#',
         codeLink: '#'
       }
