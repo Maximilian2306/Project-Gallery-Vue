@@ -1,18 +1,15 @@
 <template>
   <div id="app" class="app-container">
-    <!-- Mobile Sidebar Toggle -->
     <button class="sidebar-toggle" @click="toggleSidebar">
       <i class="fas fa-bars"></i>
     </button>
     
-    <!-- Sidebar Navigation -->
     <SidebarNavigation 
       :categories="categories"
       :projects="projects"
       ref="sidebar"
     />
     
-    <!-- Main Content -->
     <div class="main-content">
       <AppHeader />
       <AppControls />
@@ -104,7 +101,7 @@ export default {
         icon: 'puzzle-piece',
         tech: ['C#', 'WPF', 'XAML', 'SQL'],
         demoLink: '#',
-        codeLink: 'https://github.com/Maximilian2306/FlyTillYouDieDepot'
+        codeLink: 'https://github.com/Maximilian2306/FlyTilYouDieDepot'
       },
       {
         id: 3,
@@ -123,9 +120,14 @@ export default {
         title: 'Auto Clicker',
         descriptionKey: 'formatter-desc',
         icon: 'code',
-        tech: ['Python'],
-        demoLink: '#',
-        codeLink: '#'
+        tech: ['Python', 'Tkinter', 'PyAutoGUI'],
+        // tech: [
+        //   { name: 'Python', icon: 'fa-brands fa-python' },
+        //   { name: 'Tkinter', icon: 'fa-solid fa-window-restore' },
+        //   { name: 'PyAutoGUI', icon: 'fa-solid fa-mouse' }
+        // ],
+        demoLink: 'https://github.com/Maximilian2306/Auto-Clicker/releases/tag/Auto-Clicker',
+        codeLink: 'https://github.com/Maximilian2306/Auto-Clicker'
       }
     ])
 

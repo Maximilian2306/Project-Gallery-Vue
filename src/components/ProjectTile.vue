@@ -1,7 +1,7 @@
 <template>
   <div class="project-tile">
     <div :class="['project-image', gradient]">
-      <i :class="`fas fa-${project.icon} project-image-icon`"></i>
+      <i :class="`fas fa-${project.icon} project-image-icon`"></i> 
     </div>
     <div class="project-info">
       <h3 class="project-title">{{ project.title }}</h3>
@@ -9,16 +9,23 @@
       <div class="project-tech">
         <span v-for="tech in project.tech" :key="tech" class="tech-tag">
           {{ tech }}
-        </span>
+        </span> 
       </div>
+
+      <!-- <div class="project-tech">
+        <span v-for="tech in project.tech" :key="tech.name" class="tech-tag">
+          <i v-if="tech.icon" :class="tech.icon"></i> {{ tech.name }}
+        </span>
+      </div> -->
+
       <div class="project-links">
         <a :href="project.demoLink" class="project-link btn-primary">
           <i class="fas fa-play"></i>
-          <span>{{ t('demo') }}</span>
+          <span>{{ t('demo') }}</span> 
         </a>
         <a :href="project.codeLink" class="project-link btn-secondary">
           <i class="fab fa-github"></i>
-          Code
+          Code 
         </a>
       </div>
     </div>

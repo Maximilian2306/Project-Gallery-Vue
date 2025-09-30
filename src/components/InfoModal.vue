@@ -13,8 +13,6 @@
         <li>{{ t('feature-1') }}</li>
         <li>{{ t('feature-2') }}</li>
         <li>{{ t('feature-3') }}</li>
-        <li>{{ t('feature-4') }}</li>
-        <li>{{ t('feature-5') }}</li>
       </ul>
     </div>
   </div>

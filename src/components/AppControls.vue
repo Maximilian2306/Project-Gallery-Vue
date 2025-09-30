@@ -1,21 +1,28 @@
 <template>
   <div class="controls">
     <div class="settings">
+      <!-- Dark / Light Mode Toggle -->
       <button class="toggle-btn" @click="toggleTheme">
         <i :class="isDarkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
       </button>
+
+      <!-- Language Selector -->
       <div class="language-selector">
         <select :value="currentLanguage" @change="handleLanguageChange">
+          <option disabled value="">🌐 Sprache wählen</option>
           <option value="de">🇩🇪 Deutsch</option>
           <option value="en">🇺🇸 English</option>
         </select>
       </div>
+
+      <!-- Info Button -->
       <button class="toggle-btn" @click="showInfo">
         <i class="fas fa-info-circle"></i>
       </button>
     </div>
   </div>
 </template>
+
 
 <script>
 import { inject } from 'vue'

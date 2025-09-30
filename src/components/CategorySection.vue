@@ -2,7 +2,7 @@
   <section class="category-section">
     <div class="category-header">
       <div class="category-icon">
-        <i :class="`fas fa-${category.icon}`"></i>
+        <i :class="`fas fa-${category.icon}`"></i> 
       </div>
       <h2 class="category-title">{{ t(category.titleKey) }}</h2>
       <div class="category-count">{{ t(category.countKey) }}</div>
