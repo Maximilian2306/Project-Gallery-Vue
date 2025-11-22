@@ -12,7 +12,14 @@
     
     <div class="main-content">
       <AppHeader />
-      <AppControls />
+      <ToolBar
+        :technologies="technologies"
+        :selected-techs="selectedTechs"
+        :projects="projects"
+        :search-query="searchQuery"
+        @update:selected-techs="selectedTechs = $event"
+        @update:search-query="searchQuery = $event"
+      />
       <div class="main-container">
         <CategorySection
           v-for="category in categories"
@@ -29,22 +36,23 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, provide } from 'vue'
+import { ref, provide, computed } from 'vue'
 import AppHeader from './components/AppHeader.vue'
-import AppControls from './components/AppControls.vue'
 import CategorySection from './components/CategorySection.vue'
 import InfoModal from './components/InfoModal.vue'
 import SidebarNavigation from './components/SidebarNavigation.vue'
+import ToolBar from './components/ToolBar.vue'
 import { useTranslations, useTheme } from './i18n/useTranslations'
+import { categories as categoryData, projects as projectData, getAllTechnologies } from './data/projects'
 
 export default {
   name: 'App',
   components: {
     AppHeader,
-    AppControls,
     CategorySection,
     InfoModal,
-    SidebarNavigation
+    SidebarNavigation,
+    ToolBar
   },
   setup() {
     const showInfoModal = ref(false)
@@ -57,82 +65,36 @@ export default {
     provide('translations', { t, currentLanguage, setLanguage })
     provide('theme', { isDarkMode, toggleTheme })
 
-    const categories = ref([
-      {
-        id: 'games',
-        icon: 'gamepad',
-        titleKey: 'games',
-        countKey: 'games-count',
-        gradient: 'game-pattern'
-      },
-      {
-        id: 'tools',
-        icon: 'tools',
-        titleKey: 'tools',
-        countKey: 'tools-count',
-        gradient: 'tool-pattern'
-      },
-      {
-        id: 'services',
-        icon: 'cloud',
-        titleKey: 'services',
-        countKey: 'services-count',
-        gradient: 'service-pattern'
-      }
-    ])
+    const categories = ref(categoryData)
+    const projects = ref(projectData)
+    const selectedTechs = ref([])
+    const searchQuery = ref('')
+    const technologies = getAllTechnologies()
 
-    const projects = ref([
-      // Games
-      {
-        id: 1,
-        category: 'games',
-        title: 'Minesweeper_AI_optimized',
-        descriptionKey: 'space-desc',
-        icon: 'rocket',
-        tech: ['JavaScript', 'HTML5', 'WebGL'],
-        demoLink: 'https://maximilian2306.github.io/Minesweeper_AI_v2/',
-        codeLink: 'https://github.com/Maximilian2306/Minesweeper_AI_v2'
-      },
-      {
-        id: 2,
-        category: 'games',
-        title: 'FlyTillYouDieDepot',
-        descriptionKey: 'memory-desc',
-        icon: 'puzzle-piece',
-        tech: ['C#', 'WPF', 'XAML', 'SQL'],
-        demoLink: '#',
-        codeLink: 'https://github.com/Maximilian2306/FlyTilYouDieDepot'
-      },
-      {
-        id: 3,
-        category: 'games',
-        title: 'Minesweeper_AI',
-        descriptionKey: 'space-desc',
-        icon: 'rocket',
-        tech: ['JavaScript', 'HTML5', 'WebGL'],
-        demoLink: 'https://maximilian2306.github.io/Minesweeper_AI/',
-        codeLink: 'https://github.com/Maximilian2306/Minesweeper_AI'
-      },
-      // Tools
-      {
-        id: 4,
-        category: 'tools',
-        title: 'Auto Clicker',
-        descriptionKey: 'formatter-desc',
-        icon: 'code',
-        tech: ['Python', 'Tkinter', 'PyAutoGUI'],
-        // tech: [
-        //   { name: 'Python', icon: 'fa-brands fa-python' },
-        //   { name: 'Tkinter', icon: 'fa-solid fa-window-restore' },
-        //   { name: 'PyAutoGUI', icon: 'fa-solid fa-mouse' }
-        // ],
-        demoLink: 'https://github.com/Maximilian2306/Auto-Clicker/releases/tag/Auto-Clicker',
-        codeLink: 'https://github.com/Maximilian2306/Auto-Clicker'
+    const filteredProjects = computed(() => {
+      let result = projects.value
+
+      // Filter by tech stack
+      if (selectedTechs.value.length > 0) {
+        result = result.filter(project =>
+          selectedTechs.value.some(tech => project.tech.includes(tech))
+        )
       }
-    ])
+
+      // Filter by search query
+      if (searchQuery.value.trim()) {
+        const query = searchQuery.value.toLowerCase().trim()
+        result = result.filter(project =>
+          project.title.toLowerCase().includes(query) ||
+          project.tech.some(tech => tech.toLowerCase().includes(query))
+        )
+      }
+
+      return result
+    })
 
     const getProjectsByCategory = (categoryId) => {
-      return projects.value.filter(p => p.category === categoryId)
+      return filteredProjects.value.filter(p => p.category === categoryId)
     }
 
     const toggleSidebar = () => {
@@ -146,6 +108,9 @@ export default {
       sidebar,
       categories,
       projects,
+      selectedTechs,
+      searchQuery,
+      technologies,
       getProjectsByCategory,
       toggleSidebar
     }

@@ -1,14 +1,14 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
 const translations = {
   de: {
     title: 'Meine Projekt Gallery',
     subtitle: 'Eine Sammlung meiner besten Programmierprojekte',
-    games: 'Spiele', 
-    'games-count': '2 Projekte',
-    tools: 'Tools', 
-    'tools-count': '1 Projekte',
-    services: 'Services', 
+    games: 'Spiele',
+    'games-count': '3 Projekte',
+    tools: 'Tools',
+    'tools-count': '1 Projekt',
+    services: 'Services',
     'services-count': '0 Projekte',
     demo: 'Demo',
     live: 'Live',
@@ -19,20 +19,31 @@ const translations = {
     'feature-1': '🌓 Dark/Light Mode Toggle',
     'feature-2': '🌍 Mehrsprachigkeit (DE/EN)',
     'feature-3': '🎮 Kategorisierte Darstellung',
-    'space-desc': 'Ein Klon von Minesweeper mit KI-Spiel-Unterstützung, verschiedenen Schwierigkeitsgraden und einem Leaderboard.',
+    'space-desc': 'Ein Minesweeper Klon mit KI-Spiel-Unterstützung, verschiedenen Schwierigkeitsgraden und Leaderboard.',
     'memory-desc': 'Erste Anwendung einer virtuellen Flugzeugswebsite mit C# und WPF.',
     'formatter-desc': 'Ein einfacher Auto Clicker, der Mausklicks in konfigurierbaren Intervallen automatisiert.',
-    'categories': 'Kategorien'
+    'categories': 'Kategorien',
+    'filter': 'Filter',
+    'all': 'Alle',
+    'search': 'Suchen',
+    'search-placeholder': 'Projekte durchsuchen...',
+    'no-results': 'Keine Projekte gefunden',
+    'filter-languages': 'Sprachen',
+    'filter-frameworks': 'Frameworks',
+    'filter-technologies': 'Technologien',
+    'show-filters': 'Filter anzeigen',
+    'hide-filters': 'Filter ausblenden',
+    'clear-filters': 'Filter zurücksetzen'
   },
   en: {
     title: 'My Project Gallery',
     subtitle: 'A collection of my best programming projects',
-    games: 'Games', 
+    games: 'Games',
     'games-count': '3 Projects',
-    tools: 'Tools', 
-    'tools-count': '4 Projects',
-    services: 'Services', 
-    'services-count': '2 Projects',
+    tools: 'Tools',
+    'tools-count': '1 Project',
+    services: 'Services',
+    'services-count': '0 Projects',
     demo: 'Demo',
     live: 'Live',
     api: 'API',
@@ -45,31 +56,69 @@ const translations = {
     'space-desc': 'A clone of Minesweeper with AI game support, different difficulty levels and a leaderboard.',
     'memory-desc': 'First application of a virtual airplane website using C# and WPF.',
     'formatter-desc': 'A simple auto clicker that automates mouse clicks at configurable intervals.',
-    'categories': 'Categories'
+    'categories': 'Categories',
+    'filter': 'Filter',
+    'all': 'All',
+    'search': 'Search',
+    'search-placeholder': 'Search projects...',
+    'no-results': 'No projects found',
+    'filter-languages': 'Languages',
+    'filter-frameworks': 'Frameworks',
+    'filter-technologies': 'Technologies',
+    'show-filters': 'Show filters',
+    'hide-filters': 'Hide filters',
+    'clear-filters': 'Clear filters'
   }
 }
 
-const currentLanguage = ref('de')
+// Initialize language from localStorage or default to 'de'
+const savedLanguage = typeof localStorage !== 'undefined' ? localStorage.getItem('language') : null
+const currentLanguage = ref(savedLanguage || 'de')
 
 export function useTranslations() {
-  const t = (key) => {
-    return translations[currentLanguage.value][key] || key
-  }
+    const t = (key) => {
+        return translations[currentLanguage.value][key] || key
+    }
+
     const setLanguage = (lang) => {
-    if (translations[lang]) {
-      currentLanguage.value = lang
+        if (translations[lang]) {
+            currentLanguage.value = lang
+            localStorage.setItem('language', lang)
+        }
     }
-    }
-    const language = computed(() => currentLanguage.value)
-    return { t, setLanguage, language }
+
+    return { t, setLanguage, currentLanguage }
 }
 
-export function useTheme() {
-    const currentTheme = ref('light')
-    const toggleTheme = () => {
-    currentTheme.value = currentTheme.value === 'light' ? 'dark' : 'light'
-    document.documentElement.setAttribute('data-theme', currentTheme.value)
+// Initialize theme from localStorage or system preference
+const getInitialTheme = () => {
+    if (typeof localStorage !== 'undefined') {
+        const saved = localStorage.getItem('theme')
+        if (saved) return saved
     }
-    const theme = computed(() => currentTheme.value)
-    return { theme, toggleTheme }
+    // Check system preference
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark'
+    }
+    return 'light'
+}
+
+const currentTheme = ref(getInitialTheme())
+
+export function useTheme() {
+    const isDarkMode = ref(currentTheme.value === 'dark')
+
+    // Apply theme on initialization
+    if (typeof document !== 'undefined') {
+        document.documentElement.setAttribute('data-theme', currentTheme.value)
+    }
+
+    const toggleTheme = () => {
+        currentTheme.value = currentTheme.value === 'light' ? 'dark' : 'light'
+        isDarkMode.value = currentTheme.value === 'dark'
+        document.documentElement.setAttribute('data-theme', currentTheme.value)
+        localStorage.setItem('theme', currentTheme.value)
+    }
+
+    return { isDarkMode, toggleTheme }
 }
